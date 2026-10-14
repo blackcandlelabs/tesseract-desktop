@@ -4,6 +4,10 @@ FROM rust:bullseye@sha256:fae8ebcb8eda28d37df2b965c87c15a572dac2b6d3893a72d6dea9
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Non-interactive corepack: the container's pnpm shim otherwise parks
+# forever on its first-run download prompt during docker:install.
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+
 # Tesseract fork: Debian bullseye is EOL and its packages moved to
 # archive.debian.org; the stock deb.debian.org sources 404, which breaks
 # this image build today. Point apt at the archive and don't enforce
