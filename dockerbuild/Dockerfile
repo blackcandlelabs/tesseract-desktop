@@ -4,6 +4,13 @@ FROM rust:bullseye@sha256:fae8ebcb8eda28d37df2b965c87c15a572dac2b6d3893a72d6dea9
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Tesseract fork: Debian bullseye is EOL and its packages moved to
+# archive.debian.org; the stock deb.debian.org sources 404, which breaks
+# this image build today. Point apt at the archive and don't enforce
+# the archived Release files' (expired) Valid-Until.
+RUN sed -i -e 's|deb.debian.org|archive.debian.org|g' -e 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99-archive
+
 RUN apt-get -qq update && apt-get -y -qq dist-upgrade && \
   apt-get -y -qq install --no-install-recommends \
   # tclsh is required for building SQLite as part of SQLCipher

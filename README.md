@@ -41,6 +41,16 @@ to the sign-in screen before a build is called good.
    `build/icon.png`, `build/icon.ico`, and the Icon Composer bundle
    `build/icon.icon` (layer asset renamed to `candle.png`).
 
+3. **Native-build image fix** — `dockerbuild/Dockerfile` points apt at
+   archive.debian.org (bullseye is EOL; the stock sources 404 today).
+4. **macOS icon** — electron-builder 26 wants `actool` (full Xcode) to
+   compile the Icon Composer bundle. v1 builds with a classic
+   `build/icon.icns` (generated from the candle tile with iconutil);
+   `electron-builder.ts` points at it, and the `.icon` bundle is kept
+   as source under `assets/icon.icon/` for when a full-Xcode host
+   builds. Restore it by moving the bundle back to `build/` and
+   reverting the two icon paths.
+
 Everything else — branding, server pinning, SSO-only login, the agent
 banner — lives in the webapp (tesseract-web), not in this shell.
 
