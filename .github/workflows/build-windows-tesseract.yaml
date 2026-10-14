@@ -26,10 +26,10 @@ jobs:
               with:
                   arch: x64
 
-            - name: Choco install Tcl
+            - name: Choco install tclsh (magicsplat)
               shell: pwsh
               run: |
-                  choco install -y tcl --no-progress
+                  choco install -y magicsplat-tcl-tk --no-progress
                   echo "${HOME}/AppData/Local/Apps/Tcl86/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
             - name: Choco install NetWide Assembler
