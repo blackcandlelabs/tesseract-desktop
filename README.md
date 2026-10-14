@@ -37,9 +37,11 @@ to the sign-in screen before a build is called good.
    appId `com.blackcandle.tesseract`, package name `tesseract-desktop`,
    deep-link protocols `com.blackcandletech.tesseract` + `tesseract`.
    `package.json`'s name is `tesseract-desktop` to match.
-2. **Icons** are the Black Candle candle mark on the #08090B tile:
-   `build/icon.png`, `build/icon.ico`, and the Icon Composer bundle
-   `build/icon.icon` (layer asset renamed to `candle.png`).
+2. **Icons** are the tesseract mark (hypercube wireframe, offset-depth
+   projection; design: Figma "Tesseract — App Icon Candidates",
+   candidate B) in #E9A33D on the #171209 tile: `build/icon.png`,
+   `build/icon.ico`, `build/icon.icns` (see also item 4), and the Icon
+   Composer bundle `build/icon.icon`.
 
 3. **Native-build image fix** — `dockerbuild/Dockerfile` points apt at
    archive.debian.org (bullseye is EOL; the stock sources 404 today).
@@ -72,6 +74,15 @@ to the sign-in screen before a build is called good.
    include `dist/squirrel-windows/*.exe`,
    `dist/squirrel-windows/*.nupkg` and `dist/squirrel-windows/RELEASES`
    (fix a8c58ba; cherry-picked to develop as 959d3b9).
+
+7. **OIDC fragment-state fix (login-critical)** — `src/protocol.ts`
+   `getProfileFromDeeplink` read the OIDC `state` only from the URL
+   query string and asserted it non-null. MAS answers in fragment
+   response mode, so on the Windows argv-scan deep-link path the read
+   was null and the Electron main process crashed on `.split`,
+   breaking fresh Windows logins. The handler now falls back to the
+   fragment and resolves to the default profile when state is absent
+   (PR #1, f4575d6). Shipped in CalVer 2026.10.1.
 
 Everything else — branding, server pinning, SSO-only login, the agent
 banner — lives in the webapp (tesseract-web), not in this shell.
