@@ -61,6 +61,17 @@ to the sign-in screen before a build is called good.
    same host). If either side changes without the other, MAS denies
    registration and desktop login fails with a generic homeserver
    error (this exact bug shipped in the first macOS build).
+6. **Windows CI artifact glob** — Windows builds run in CI
+   (`.github/workflows/build-windows-tesseract.yaml`, windows-2025
+   runner); the targets are squirrel + msi (electron-builder.ts).
+   electron-builder writes the Squirrel update-channel files (Setup
+   exe, .nupkg, RELEASES) into `dist/squirrel-windows/`, not the
+   dist/ root — the original upload globs (`dist/*.exe` etc.)
+   silently missed the whole set, so run 38603992011 archived only
+   the MSI even though Squirrel built cleanly. The upload paths now
+   include `dist/squirrel-windows/*.exe`,
+   `dist/squirrel-windows/*.nupkg` and `dist/squirrel-windows/RELEASES`
+   (fix a8c58ba; cherry-picked to develop as 959d3b9).
 
 Everything else — branding, server pinning, SSO-only login, the agent
 banner — lives in the webapp (tesseract-web), not in this shell.
@@ -77,8 +88,8 @@ pnpm run asar-webapp
 VARIANT_PATH=tesseract/release/build.json pnpm run build  # electron-builder
 ```
 
-Linux targets: `.tar.gz` + `.deb` in `dist/`. Windows (NSIS) builds on
-the same host through electron-builder's wine path. **macOS targets
+Linux targets: `.tar.gz` + `.deb` in `dist/`. Windows targets
+(squirrel + msi) build in CI — see patch item 6. **macOS targets
 require a macOS host** — electron-builder will not produce them on
 Linux; the same commands run unchanged on a Mac.
 
