@@ -35,7 +35,7 @@ to the sign-in screen before a build is called good.
 1. **Build variant** `tesseract/release/build.json`, selected with
    `VARIANT_PATH=tesseract/release/build.json`: productName "Tesseract",
    appId `com.blackcandle.tesseract`, package name `tesseract-desktop`,
-   deep-link protocols `com.blackcandle.tesseract` + `tesseract`.
+   deep-link protocols `com.blackcandletech.tesseract` + `tesseract`.
    `package.json`'s name is `tesseract-desktop` to match.
 2. **Icons** are the Black Candle candle mark on the #08090B tile:
    `build/icon.png`, `build/icon.ico`, and the Icon Composer bundle
@@ -50,6 +50,17 @@ to the sign-in screen before a build is called good.
    as source under `assets/icon.icon/` for when a full-Xcode host
    builds. Restore it by moving the bundle back to `build/` and
    reverting the two icon paths.
+
+5. **OIDC scheme pairing (login-critical)** — the desktop registers
+   with MAS dynamically at login. MAS policy requires the OAuth
+   redirect scheme (variant `protocols[0]`) to be the reverse-DNS of
+   the webapp config's `oidc_metadata.client_uri` host. Ours are
+   `com.blackcandletech.tesseract` and
+   `https://tesseract.blackcandletech.com/` (the config side lives in
+   the deployment's config.json, alongside logo/tos/policy URIs on the
+   same host). If either side changes without the other, MAS denies
+   registration and desktop login fails with a generic homeserver
+   error (this exact bug shipped in the first macOS build).
 
 Everything else — branding, server pinning, SSO-only login, the agent
 banner — lives in the webapp (tesseract-web), not in this shell.
