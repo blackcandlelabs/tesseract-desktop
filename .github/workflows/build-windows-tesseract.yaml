@@ -1,0 +1,62 @@
+name: Build Windows (Tesseract)
+
+# Fork-only workflow: builds the Windows desktop app on a Windows host
+# (the native modules, matrix-seshat in particular, must be compiled for
+# win32 on Windows; a Linux-built package silently embeds the Linux ELF).
+# The webapp is not rebuilt here: it downloads the production
+# tesseract-web webapp.asar from this repo's build-inputs release.
+on:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    build-windows:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: tesseract
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+
+            - name: Enable pnpm
+              shell: bash
+              run: |
+                  corepack enable
+                  corepack prepare pnpm@10.30.3 --activate
+
+            - name: Fetch production webapp.asar
+              shell: bash
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh release download build-inputs-1.12.13 --pattern webapp.asar --dir .
+
+            - name: Install dependencies
+              shell: bash
+              run: pnpm install
+
+            - name: Build native modules (hak)
+              shell: bash
+              run: pnpm run build:native
+
+            - name: Package (squirrel + msi, unsigned)
+              shell: bash
+              env:
+                  VARIANT_PATH: tesseract/release/build.json
+                  CSC_IDENTITY_AUTO_DISCOVERY: "false"
+              run: pnpm run build
+
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: tesseract-windows-1.12.13
+                  path: |
+                      dist/*.exe
+                      dist/*.msi
+                      dist/*.nupkg
+                      dist/RELEASES
+                  if-no-files-found: warn
