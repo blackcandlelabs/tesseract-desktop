@@ -82,4 +82,7 @@ jobs:
                       dist/*.msi
                       dist/*.nupkg
                       dist/RELEASES
+                      dist/squirrel-windows/*.exe
+                      dist/squirrel-windows/*.nupkg
+                      dist/squirrel-windows/RELEASES
                   if-no-files-found: warn
