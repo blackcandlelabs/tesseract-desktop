@@ -4,7 +4,7 @@
     "productName": "Tesseract",
     "description": "Tesseract: Black Candle's secure messenger",
     "protocols": [
-        "com.blackcandle.tesseract",
+        "com.blackcandletech.tesseract",
         "tesseract"
     ]
 }
