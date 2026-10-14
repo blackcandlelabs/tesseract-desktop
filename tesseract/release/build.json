@@ -1,0 +1,10 @@
+{
+    "appId": "com.blackcandle.tesseract",
+    "name": "tesseract-desktop",
+    "productName": "Tesseract",
+    "description": "Tesseract: Black Candle's secure messenger",
+    "protocols": [
+        "com.blackcandle.tesseract",
+        "tesseract"
+    ]
+}

@@ -1,5 +1,5 @@
 {
-    "name": "element-desktop",
+    "name": "tesseract-desktop",
     "productName": "Element",
     "main": "lib/electron-main.js",
     "exports": "./lib/electron-main.js",
