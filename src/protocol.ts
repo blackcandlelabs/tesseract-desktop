@@ -136,7 +136,7 @@ export default class ProtocolHandler {
                     const state =
                         parsedUrl.searchParams.get("state") ??
                         new URLSearchParams(parsedUrl.hash.replace(/^#/, "")).get("state");
-                    sessionId = state?.split(`:${SEARCH_PARAM}:`)[1];
+                    sessionId = state?.split(`:${SEARCH_PARAM}:`)[1] ?? null;
                 }
                 if (!sessionId) {
                     return undefined;
