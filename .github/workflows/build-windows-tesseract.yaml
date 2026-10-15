@@ -66,12 +66,16 @@ jobs:
               shell: pwsh
               run: pnpm build:native --target x86_64-pc-windows-msvc
 
+            - name: Build app (ts + res)
+              shell: bash
+              run: pnpm run build:ts && pnpm run build:res
+
             - name: Package Squirrel (release version)
               shell: bash
               env:
                   VARIANT_PATH: tesseract/release/build.json
                   CSC_IDENTITY_AUTO_DISCOVERY: "false"
-              run: pnpm run build -- --win squirrel
+              run: pnpm exec electron-builder --win squirrel
 
             - name: Package MSI (YY.MM.VER mapping - WiX caps major at 255)
               shell: bash
@@ -80,7 +84,7 @@ jobs:
                   CSC_IDENTITY_AUTO_DISCOVERY: "false"
               run: |
                   node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json'));const [y,m,v]=p.version.split('.');p.version=y.slice(2)+'.'+m+'.'+v;fs.writeFileSync('package.json',JSON.stringify(p,null,4)+'\n');console.log('MSI build version:',p.version)"
-                  pnpm run build -- --win msi
+                  pnpm exec electron-builder --win msi
                   git checkout -- package.json
 
             - name: Upload artifacts
