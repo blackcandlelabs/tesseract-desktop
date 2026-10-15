@@ -39,6 +39,7 @@ import Store from "./store.js";
 import { buildMenuTemplate } from "./vectormenu.js";
 import webContentsHandler from "./webcontents-handler.js";
 import * as updater from "./updater.js";
+import { startTesseractUpdater } from "./tesseract-updater.js";
 import ProtocolHandler from "./protocol.js";
 import { _t, AppLocalization } from "./language-helper.js";
 import { setDisplayMediaCallback } from "./displayMediaCallback.js";
@@ -427,7 +428,9 @@ app.on("ready", async () => {
     } else if (global.vectorConfig["update_base_url"]) {
         void updater.start(global.vectorConfig["update_base_url"]);
     } else {
-        console.log("No update_base_url is defined: auto update is disabled");
+        // Tesseract fork: no Squirrel feed is configured; use the
+        // releases-feed updater (GitHub releases + desktop-update.json).
+        startTesseractUpdater(() => global.mainWindow ?? null);
     }
 
     // Set up i18n before loading storage as we need translations for dialogs
