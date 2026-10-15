@@ -84,6 +84,13 @@ to the sign-in screen before a build is called good.
    fragment and resolves to the default profile when state is absent
    (PR #1, f4575d6). Shipped in CalVer 2026.10.1.
 
+8. **CalVer MSI mapping (Windows)** - WiX/MSI ProductVersion caps the
+   major field at 255, so the CalVer year cannot be an MSI version
+   (CNDL0242). The Windows CI builds in two passes: Squirrel at the
+   true CalVer (2026.10.1), then the MSI with package.json's version
+   mapped to YY.MM.VER (26.10.1) for that pass only - the mapping is
+   monotonic across releases, so MSI upgrade chains hold.
+
 Everything else — branding, server pinning, SSO-only login, the agent
 banner — lives in the webapp (tesseract-web), not in this shell.
 
